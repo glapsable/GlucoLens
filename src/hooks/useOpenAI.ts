@@ -7,7 +7,10 @@ export function useOpenAI() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function analyzeImage(imageBase64: string): Promise<ScanResult | null> {
+  async function analyzeImage(
+    imageBase64: string,
+    labelMode = false,
+  ): Promise<ScanResult | null> {
     setLoading(true);
     setError(null);
 
@@ -27,7 +30,17 @@ export function useOpenAI() {
               content: [
                 {
                   type: "text",
-                  text: `Jesteś asystentem dla diabetyka typu 1. Przeanalizuj zdjęcie posiłku i zwróć TYLKO JSON (bez markdown, bez \`\`\`):
+                  text: labelMode
+                    ? `Jesteś asystentem dla diabetyka typu 1. Na zdjęciu jest etykieta wartości odżywczych produktu spożywczego. Odczytaj dane i zwróć TYLKO JSON (bez markdown, bez \`\`\`):
+{
+  "label": "nazwa produktu z etykiety",
+  "items": [
+    { "name": "nazwa produktu", "weight_g": 100, "carbs_g": węglowodany na 100g }
+  ],
+  "total_carbs_g": węglowodany na 100g
+}
+Odczytaj dokładnie wartość węglowodanów na 100g z tabeli wartości odżywczych.`
+                    : `Jesteś asystentem dla diabetyka typu 1. Przeanalizuj zdjęcie posiłku i zwróć TYLKO JSON (bez markdown, bez \`\`\`):
 {
   "label": "krótka nazwa posiłku",
   "items": [

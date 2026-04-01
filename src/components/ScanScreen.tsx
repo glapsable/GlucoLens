@@ -1,12 +1,13 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 interface Props {
-  onScan: (base64: string) => void;
+  onScan: (base64: string, labelMode: boolean) => void;
   loading: boolean;
 }
 
 export function ScanScreen({ onScan, loading }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [scanMode, setScanMode] = useState<"plate" | "label">("plate");
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -14,23 +15,33 @@ export function ScanScreen({ onScan, loading }: Props) {
     const reader = new FileReader();
     reader.onload = () => {
       const base64 = (reader.result as string).split(",")[1];
-      onScan(base64);
+      onScan(base64, scanMode === "label");
     };
     reader.readAsDataURL(file);
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 px-4 pt-8">
-      <div className="text-2xl font-medium tracking-wide">
-        <span className="text-purple-400">Gluco</span>
-        <span className="text-purple-300">Lens</span>
+    <div className="flex flex-col items-center gap-4 px-4">
+      {/* Przełącznik trybu skanu */}
+      <div className="flex gap-2 w-full max-w-sm bg-[#16161f] border border-[#2a2a3a] rounded-xl p-1">
+        <button
+          onClick={() => setScanMode("plate")}
+          className={`flex-1 py-2 rounded-lg text-sm transition-colors ${scanMode === "plate" ? "bg-purple-700 text-white" : "text-gray-400"}`}
+        >
+          🍽️ Talerz
+        </button>
+        <button
+          onClick={() => setScanMode("label")}
+          className={`flex-1 py-2 rounded-lg text-sm transition-colors ${scanMode === "label" ? "bg-purple-700 text-white" : "text-gray-400"}`}
+        >
+          🏷️ Etykieta
+        </button>
       </div>
 
       <div
         onClick={() => !loading && inputRef.current?.click()}
-        className="w-full max-w-sm h-56 bg-[#16161f] border border-[#2a2a3a] rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer relative overflow-hidden"
+        className="w-full max-w-sm h-52 bg-[#16161f] border border-[#2a2a3a] rounded-2xl flex flex-col items-center justify-center gap-3 cursor-pointer relative overflow-hidden"
       >
-        {/* narożniki */}
         <span className="absolute top-3 left-3 w-5 h-5 border-t-2 border-l-2 border-purple-600 rounded-tl" />
         <span className="absolute top-3 right-3 w-5 h-5 border-t-2 border-r-2 border-purple-600 rounded-tr" />
         <span className="absolute bottom-3 left-3 w-5 h-5 border-b-2 border-l-2 border-purple-600 rounded-bl" />
@@ -63,11 +74,20 @@ export function ScanScreen({ onScan, loading }: Props) {
               </svg>
             </div>
             <span className="text-sm text-gray-500">
-              Dotknij aby zrobić zdjęcie
+              {scanMode === "plate"
+                ? "Dotknij aby zrobić zdjęcie"
+                : "Zrób zdjęcie etykiety"}
             </span>
-            <span className="text-xs text-gray-600 px-4 text-center">
-              Połóż kartę płatniczą obok jedzenia dla lepszej dokładności
-            </span>
+            {scanMode === "plate" && (
+              <span className="text-xs text-gray-600 px-4 text-center">
+                Połóż kartę płatniczą obok jedzenia dla lepszej dokładności
+              </span>
+            )}
+            {scanMode === "label" && (
+              <span className="text-xs text-gray-600 px-4 text-center">
+                Sfotografuj tabelę wartości odżywczych z opakowania
+              </span>
+            )}
           </>
         )}
       </div>
@@ -86,7 +106,11 @@ export function ScanScreen({ onScan, loading }: Props) {
         disabled={loading}
         className="w-full max-w-sm bg-purple-700 hover:bg-purple-600 disabled:opacity-50 text-white rounded-2xl py-4 text-base font-medium transition-colors"
       >
-        {loading ? "Analizuję posiłek..." : "Skanuj posiłek"}
+        {loading
+          ? "Analizuję..."
+          : scanMode === "plate"
+            ? "Skanuj posiłek"
+            : "Skanuj etykietę"}
       </button>
     </div>
   );
