@@ -65,6 +65,9 @@ export function ScanScreen({ onScan, loading }: Props) {
             <span className="text-sm text-gray-500">
               Dotknij aby zrobić zdjęcie
             </span>
+            <span className="text-xs text-gray-600 px-4 text-center">
+              Połóż kartę płatniczą obok jedzenia dla lepszej dokładności
+            </span>
           </>
         )}
       </div>

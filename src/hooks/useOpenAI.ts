@@ -35,7 +35,11 @@ export function useOpenAI() {
   ],
   "total_carbs_g": suma wszystkich węglowodanów
 }
-Szacuj węglowodany dokładnie. Jeśli nie widzisz jedzenia, zwróć pustą tablicę items i total_carbs_g: 0.`,
+Zasady szacowania wagi:
+- Jeśli na zdjęciu widoczna jest karta płatnicza (85x54mm), moneta lub inny znany obiekt — użyj go jako punktu odniesienia do oszacowania wagi.
+- Szacuj wagę ostrożnie, raczej zawyżaj niż zaniżaj.
+- Węglowodany obliczaj na podstawie rzeczywistych wartości odżywczych produktu i oszacowanej wagi.
+- Jeśli nie widzisz jedzenia, zwróć pustą tablicę items i total_carbs_g: 0.`,
                 },
                 {
                   type: "image_url",
