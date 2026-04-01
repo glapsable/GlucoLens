@@ -6,8 +6,6 @@ interface Props {
   onClose: () => void;
 }
 
-const CARBS_PER_100G: Record<string, number> = {};
-
 function recalcCarbs(item: FoodItem, newWeight: number): number {
   const ratio = item.carbs_g / item.weight_g;
   return Math.round(ratio * newWeight * 10) / 10;

@@ -68,7 +68,7 @@ Zasady szacowania wagi:
       };
 
       return result;
-    } catch (e) {
+    } catch {
       setError("Nie udało się przeanalizować zdjęcia. Spróbuj ponownie.");
       return null;
     } finally {
